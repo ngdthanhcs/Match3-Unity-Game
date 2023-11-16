@@ -10,7 +10,7 @@ public class UIPanelMain : MonoBehaviour, IMenu
 
     [SerializeField] private Button btnMoves;
 
-    private UIMainManager m_mngr;
+    private UIMainManager _mainManager;
 
     private void Awake()
     {
@@ -26,26 +26,26 @@ public class UIPanelMain : MonoBehaviour, IMenu
 
     public void Setup(UIMainManager mngr)
     {
-        m_mngr = mngr;
+        _mainManager = mngr;
     }
 
     private void OnClickTimer()
     {
-        m_mngr.LoadLevelTimer();
+        _mainManager.LoadLevelTimer();
     }
 
     private void OnClickMoves()
     {
-        m_mngr.LoadLevelMoves();
+        _mainManager.LoadLevelMoves();
     }
 
     public void Show()
     {
-        this.gameObject.SetActive(true);
+        gameObject.SetActive(true);
     }
 
     public void Hide()
     {
-        this.gameObject.SetActive(false);
+        gameObject.SetActive(false);
     }
 }

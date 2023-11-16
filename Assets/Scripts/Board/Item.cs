@@ -9,19 +9,30 @@ public class Item
 {
     public Cell Cell { get; private set; }
 
-    public Transform View { get; private set; }
+    public SpriteRenderer CachedSpriteRenderer { get; private set; }
+    public Transform View => CachedSpriteRenderer.transform;
 
-
-    public virtual void SetView()
+    public virtual void SetView(SpriteRenderer spriteRenderer)
     {
-        string prefabname = GetPrefabName();
+        CachedSpriteRenderer = spriteRenderer;
+    }
 
-        if (!string.IsNullOrEmpty(prefabname))
+    public virtual void ReactivateView()
+    {
+        View.gameObject.SetActive(true);
+        View.localScale = Vector3.one;
+    }
+
+    public virtual void CreateView()
+    {
+        string prefabName = GetPrefabName();
+
+        if (!string.IsNullOrEmpty(prefabName))
         {
-            GameObject prefab = Resources.Load<GameObject>(prefabname);
+            var prefab = Resources.Load<SpriteRenderer>(prefabName);
             if (prefab)
             {
-                View = GameObject.Instantiate(prefab).transform;
+                CachedSpriteRenderer = GameObject.Instantiate(prefab);
             }
         }
     }
@@ -35,7 +46,7 @@ public class Item
 
     internal void AnimationMoveToPosition()
     {
-        if (View == null) return;
+        if (!View) return;
 
         View.DOMove(Cell.transform.position, 0.2f);
     }
@@ -58,31 +69,29 @@ public class Item
 
     public void SetSortingLayerHigher()
     {
-        if (View == null) return;
-
-        SpriteRenderer sp = View.GetComponent<SpriteRenderer>();
-        if (sp)
+        if (!View) return;
+        
+        if (CachedSpriteRenderer)
         {
-            sp.sortingOrder = 1;
+            CachedSpriteRenderer.sortingOrder = 1;
         }
     }
 
 
     public void SetSortingLayerLower()
     {
-        if (View == null) return;
-
-        SpriteRenderer sp = View.GetComponent<SpriteRenderer>();
-        if (sp)
+        if (!View) return;
+        
+        if (CachedSpriteRenderer)
         {
-            sp.sortingOrder = 0;
+            CachedSpriteRenderer.sortingOrder = 0;
         }
 
     }
 
     internal void ShowAppearAnimation()
     {
-        if (View == null) return;
+        if (!View) return;
 
         Vector3 scale = View.localScale;
         View.localScale = Vector3.one * 0.1f;
@@ -101,8 +110,7 @@ public class Item
             View.DOScale(0.1f, 0.1f).OnComplete(
                 () =>
                 {
-                    GameObject.Destroy(View.gameObject);
-                    View = null;
+                    View.gameObject.SetActive(false);
                 }
                 );
         }
@@ -132,8 +140,7 @@ public class Item
 
         if (View)
         {
-            GameObject.Destroy(View.gameObject);
-            View = null;
+            View.gameObject.SetActive(false);
         }
     }
 }

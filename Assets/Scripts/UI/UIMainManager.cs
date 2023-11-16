@@ -7,48 +7,48 @@ using UnityEngine.UI;
 
 public class UIMainManager : MonoBehaviour
 {
-    private IMenu[] m_menuList;
+    private IMenu[] _menuList;
 
-    private GameManager m_gameManager;
+    private GameManager _gameManager;
 
     private void Awake()
     {
-        m_menuList = GetComponentsInChildren<IMenu>(true);
+        _menuList = GetComponentsInChildren<IMenu>(true);
     }
 
     void Start()
     {
-        for (int i = 0; i < m_menuList.Length; i++)
+        for (int i = 0; i < _menuList.Length; i++)
         {
-            m_menuList[i].Setup(this);
+            _menuList[i].Setup(this);
         }
     }
 
     internal void ShowMainMenu()
     {
-        m_gameManager.ClearLevel();
-        m_gameManager.SetState(GameManager.eStateGame.MAIN_MENU);
+        _gameManager.ClearLevel();
+        _gameManager.SetState(GameManager.eStateGame.MAIN_MENU);
     }
 
     void Update()
     {
         if (Input.GetKeyDown(KeyCode.Escape))
         {
-            if (m_gameManager.State == GameManager.eStateGame.GAME_STARTED)
+            if (_gameManager.State == GameManager.eStateGame.GAME_STARTED)
             {
-                m_gameManager.SetState(GameManager.eStateGame.PAUSE);
+                _gameManager.SetState(GameManager.eStateGame.PAUSE);
             }
-            else if (m_gameManager.State == GameManager.eStateGame.PAUSE)
+            else if (_gameManager.State == GameManager.eStateGame.PAUSE)
             {
-                m_gameManager.SetState(GameManager.eStateGame.GAME_STARTED);
+                _gameManager.SetState(GameManager.eStateGame.GAME_STARTED);
             }
         }
     }
 
     internal void Setup(GameManager gameManager)
     {
-        m_gameManager = gameManager;
-        m_gameManager.StateChangedAction += OnGameStateChange;
+        _gameManager = gameManager;
+        _gameManager.StateChangedAction += OnGameStateChange;
     }
 
     private void OnGameStateChange(GameManager.eStateGame state)
@@ -74,9 +74,9 @@ public class UIMainManager : MonoBehaviour
 
     private void ShowMenu<T>() where T : IMenu
     {
-        for (int i = 0; i < m_menuList.Length; i++)
+        for (int i = 0; i < _menuList.Length; i++)
         {
-            IMenu menu = m_menuList[i];
+            IMenu menu = _menuList[i];
             if(menu is T)
             {
                 menu.Show();
@@ -90,7 +90,7 @@ public class UIMainManager : MonoBehaviour
 
     internal Text GetLevelConditionView()
     {
-        UIPanelGame game = m_menuList.Where(x => x is UIPanelGame).Cast<UIPanelGame>().FirstOrDefault();
+        UIPanelGame game = _menuList.Where(x => x is UIPanelGame).Cast<UIPanelGame>().FirstOrDefault();
         if (game)
         {
             return game.LevelConditionView;
@@ -101,21 +101,21 @@ public class UIMainManager : MonoBehaviour
 
     internal void ShowPauseMenu()
     {
-        m_gameManager.SetState(GameManager.eStateGame.PAUSE);
+        _gameManager.SetState(GameManager.eStateGame.PAUSE);
     }
 
     internal void LoadLevelMoves()
     {
-        m_gameManager.LoadLevel(GameManager.eLevelMode.MOVES);
+        _gameManager.LoadLevel(GameManager.eLevelMode.MOVES);
     }
 
     internal void LoadLevelTimer()
     {
-        m_gameManager.LoadLevel(GameManager.eLevelMode.TIMER);
+        _gameManager.LoadLevel(GameManager.eLevelMode.TIMER);
     }
 
     internal void ShowGameMenu()
     {
-        m_gameManager.SetState(GameManager.eStateGame.GAME_STARTED);
+        _gameManager.SetState(GameManager.eStateGame.GAME_STARTED);
     }
 }
