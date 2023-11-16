@@ -303,4 +303,9 @@ public class BoardController : MonoBehaviour
 
         _mPotentialMatch.Clear();
     }
+
+    public void RestartLevel()
+    {
+        _mBoard.RestartLevel();
+    }
 }

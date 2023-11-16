@@ -138,4 +138,9 @@ public class GameManager : MonoBehaviour
             m_levelCondition = null;
         }
     }
+
+    public void RestartLevel()
+    {
+        m_boardController.RestartLevel();
+    }
 }

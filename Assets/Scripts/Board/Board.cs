@@ -20,7 +20,7 @@ public class Board
 
     private readonly int _boardSizeY;
 
-    private readonly Cell[,] _mCells;
+    private Cell[,] _mCells;
 
     private readonly Transform _mRoot;
 
@@ -36,6 +36,7 @@ public class Board
         this._boardSizeY = gameSettings.BoardSizeY;
 
         _mCells = new Cell[_boardSizeX, _boardSizeY];
+        _originalCell = new NormalItem.eNormalType[_boardSizeX, _boardSizeY];
 
         CreateBoard();
     }
@@ -73,6 +74,8 @@ public class Board
 
     }
 
+    private NormalItem.eNormalType[,] _originalCell;
+
     internal void Fill()
     {
         for (int x = 0; x < _boardSizeX; x++)
@@ -100,13 +103,16 @@ public class Board
                     }
                 }
 
-                item.SetType(Utils.GetRandomNormalTypeExcept(types.ToArray()));
+                var type = Utils.GetRandomNormalTypeExcept(types.ToArray());
+                item.SetType(type);
                 GetView(item);
                 //item.CreateView();
                 item.SetViewRoot(_mRoot);
 
                 cell.Assign(item);
                 cell.ApplyItemPosition(false);
+
+                _originalCell[x, y] = type;
             }
         }
     }
@@ -699,5 +705,28 @@ public class Board
                 _mCells[x, y] = null;
             }
         }
+    }
+
+    public void RestartLevel()
+    {
+        for (int x = 0; x < _boardSizeX; x++)
+        {
+            for (int y = 0; y < _boardSizeY; y++)
+            {
+                Cell cell = _mCells[x, y];
+                cell.Clear();
+                
+                var item = (NormalItem) cell.Item;
+                item.SetType(_originalCell[x,y]);
+                GetView(item);
+                //item.CreateView();
+                item.SetViewRoot(_mRoot);
+
+                cell.Assign(item);
+                cell.ApplyItemPosition(false);
+            }
+        }
+        /*_mCells[x, y].Assign(list[rnd]);
+        _mCells[x, y].ApplyItemMoveToPosition();*/
     }
 }
