@@ -38,6 +38,7 @@ public class Board
 
         _mCells = new Cell[_boardSizeX, _boardSizeY];
         _originalFormation = new Dictionary<Cell, Item>();
+        _typeCounter = new Dictionary<NormalItem.eNormalType, int>();
 
         CreateBoard();
     }
@@ -105,6 +106,7 @@ public class Board
                 }
 
                 var type = Utils.GetRandomNormalTypeExcept(types.ToArray());
+                UpdateTypeCounter(type);
                 item.SetType(type);
                 GetView(item);
                 //item.CreateView();
@@ -186,7 +188,18 @@ public class Board
                 types.AddIfCellExist(cell.NeighbourRight);
                 types.AddIfCellExist(cell.NeighbourUp);
 
-                item.SetType(Utils.GetRandomNormalTypeExcept(types));
+                var availableTypes = Utils.GetAllNormalTypeExcept(types);
+
+                var pickType = _typeCounter
+                    .Where(t => availableTypes.Contains(t.Key))
+                    .Aggregate((p1, p2) 
+                        => p1.Value < p2.Value 
+                            ? p1 
+                            : p2)
+                    .Key;
+                
+                item.SetType(pickType);
+                UpdateTypeCounter(pickType);
                 GetView(item);
                 //item.CreateView();
                 item.SetViewRoot(_mRoot);
@@ -195,6 +208,15 @@ public class Board
                 cell.ApplyItemPosition(true);
             }
         }
+    }
+
+    private Dictionary<NormalItem.eNormalType, int> _typeCounter;
+
+    private void UpdateTypeCounter(NormalItem.eNormalType type)
+    {
+        if(!_typeCounter.ContainsKey(type))
+            _typeCounter.Add(type, 0);
+        _typeCounter[type]++;
     }
 
     internal void ExplodeAllItems()
