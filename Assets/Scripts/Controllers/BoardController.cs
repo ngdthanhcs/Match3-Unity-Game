@@ -66,7 +66,17 @@ public class BoardController : MonoBehaviour
                 _mGameOver = true;
                 StopHints();
                 break;
+            case GameManager.eStateGame.RESTART:
+                StopHints();
+                RestartCell();
+                FindMatchesAndCollapse();
+                break;
         }
+    }
+
+    private void RestartCell()
+    {
+        _mBoard.RestartCell();
     }
 
 
@@ -302,10 +312,5 @@ public class BoardController : MonoBehaviour
         }
 
         _mPotentialMatch.Clear();
-    }
-
-    public void RestartLevel()
-    {
-        _mBoard.RestartLevel();
     }
 }

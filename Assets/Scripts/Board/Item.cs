@@ -143,4 +143,20 @@ public class Item
             View.gameObject.SetActive(false);
         }
     }
+
+    internal void Deactivate()
+    {
+        if (View)
+        {
+            View.gameObject.SetActive(false);
+        }
+    }
+
+    public Item Clone()
+    {
+        var clone = new Item();
+        clone.CachedSpriteRenderer = CachedSpriteRenderer;
+
+        return clone;
+    }
 }

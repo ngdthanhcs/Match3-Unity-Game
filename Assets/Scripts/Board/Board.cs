@@ -3,6 +3,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using JetBrains.Annotations;
 using UnityEditorInternal.Profiling.Memory.Experimental;
 using UnityEngine;
 
@@ -36,7 +37,7 @@ public class Board
         this._boardSizeY = gameSettings.BoardSizeY;
 
         _mCells = new Cell[_boardSizeX, _boardSizeY];
-        _originalCell = new NormalItem.eNormalType[_boardSizeX, _boardSizeY];
+        _originalFormation = new Dictionary<Cell, Item>();
 
         CreateBoard();
     }
@@ -74,7 +75,7 @@ public class Board
 
     }
 
-    private NormalItem.eNormalType[,] _originalCell;
+    private Dictionary<Cell, Item> _originalFormation;
 
     internal void Fill()
     {
@@ -112,7 +113,7 @@ public class Board
                 cell.Assign(item);
                 cell.ApplyItemPosition(false);
 
-                _originalCell[x, y] = type;
+                _originalFormation[cell] = item;
             }
         }
     }
@@ -706,27 +707,28 @@ public class Board
             }
         }
     }
-
-    public void RestartLevel()
+    
+    public void RestartCell()
     {
         for (int x = 0; x < _boardSizeX; x++)
         {
             for (int y = 0; y < _boardSizeY; y++)
             {
                 Cell cell = _mCells[x, y];
-                cell.Clear();
-                
-                var item = (NormalItem) cell.Item;
-                item.SetType(_originalCell[x,y]);
-                GetView(item);
-                //item.CreateView();
-                item.SetViewRoot(_mRoot);
-
-                cell.Assign(item);
-                cell.ApplyItemPosition(false);
+                cell.DeactivateItem();
             }
         }
-        /*_mCells[x, y].Assign(list[rnd]);
-        _mCells[x, y].ApplyItemMoveToPosition();*/
+
+        for (int x = 0; x < _boardSizeX; x++)
+        {
+            for (int y = 0; y < _boardSizeY; y++)
+            {
+                Cell cell = _mCells[x, y];
+                cell.Assign(_originalFormation[cell]);
+                
+                GetView((NormalItem) cell.Item);
+                cell.ApplyItemPosition(true);
+            }
+        }
     }
 }

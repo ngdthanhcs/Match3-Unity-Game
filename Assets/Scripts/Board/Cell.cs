@@ -17,6 +17,8 @@ public class Cell : MonoBehaviour
 
     public Cell NeighbourLeft { get; set; }
 
+    private NormalItem.eNormalType _originalType;
+
 
     public bool IsEmpty => Item == null;
 
@@ -56,11 +58,14 @@ public class Cell : MonoBehaviour
 
     internal void Clear()
     {
-        if (Item != null)
-        {
-            Item.Clear();
-            Item = null;
-        }
+        if (Item == null) return;
+        Item.Clear();
+        Item = null;
+    }
+
+    internal void DeactivateItem()
+    {
+        Item?.Deactivate();
     }
 
     internal bool IsSameType(Cell other)
