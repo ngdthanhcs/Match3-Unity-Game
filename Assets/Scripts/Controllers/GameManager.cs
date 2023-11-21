@@ -100,8 +100,9 @@ public class GameManager : MonoBehaviour
             m_levelCondition = this.gameObject.AddComponent<LevelTime>();
             m_levelCondition.Setup(m_gameSettings.LevelMoves, m_uiMenu.GetLevelConditionView(), this);
         }
-
+        
         m_levelCondition.ConditionCompleteEvent += GameOver;
+        StateChangedAction += m_levelCondition.OnGameStateChange;
 
         State = eStateGame.GAME_STARTED;
     }

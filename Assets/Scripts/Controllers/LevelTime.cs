@@ -20,11 +20,19 @@ public class LevelTime : LevelCondition
         UpdateText();
     }
 
+    public override void Restart()
+    {
+        base.Restart();
+
+        m_time = m_originalValue;
+        UpdateText();
+    }
+
     private void Update()
     {
         if (m_conditionCompleted) return;
 
-        if (m_mngr.State != GameManager.eStateGame.GAME_STARTED) return;
+        if (m_mngr.State == GameManager.eStateGame.PAUSE) return;
 
         m_time -= Time.deltaTime;
 

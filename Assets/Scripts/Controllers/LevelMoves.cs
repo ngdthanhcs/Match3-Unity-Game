@@ -23,6 +23,14 @@ public class LevelMoves : LevelCondition
         UpdateText();
     }
 
+    public override void Restart()
+    {
+        base.Restart();
+
+        m_moves = (int) m_originalValue;
+        UpdateText();
+    }
+
     private void OnMove()
     {
         if (m_conditionCompleted) return;
