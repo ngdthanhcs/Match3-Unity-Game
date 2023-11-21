@@ -175,12 +175,18 @@ public class Board
         {
             for (int y = 0; y < _boardSizeY; y++)
             {
-                Cell cell = _mCells[x, y];
+                var cell = _mCells[x, y];
                 if (!cell.IsEmpty) continue;
 
-                NormalItem item = new NormalItem();
+                var item = new NormalItem();
 
-                item.SetType(Utils.GetRandomNormalType());
+                var types = new List<NormalItem.eNormalType>();
+                types.AddIfCellExist(cell.NeighbourLeft);
+                types.AddIfCellExist(cell.NeighbourBottom);
+                types.AddIfCellExist(cell.NeighbourRight);
+                types.AddIfCellExist(cell.NeighbourUp);
+
+                item.SetType(Utils.GetRandomNormalTypeExcept(types));
                 GetView(item);
                 //item.CreateView();
                 item.SetViewRoot(_mRoot);
